@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
@@ -9,22 +8,6 @@ import { Feather } from "@expo/vector-icons";
 export default function BoxSetting({ navigation }) {
   return (
     <View style={{ flex: 1 }}>
-      {/* <TouchableOpacity
-        style={styles.boxContainer}
-        onPress={() => {
-          navigation.navigate("Profile");
-        }}
-      >
-        <MaterialCommunityIcons name="human-greeting" size={24} color="black" />
-        <View style={styles.textAndIcon}>
-          <Text style={styles.textContainer}>Information</Text>
-          <AntDesign
-            name="right"
-            size={18}
-            color="black"
-          />
-        </View>
-      </TouchableOpacity> */}
       <TouchableOpacity style={styles.boxContainer}>
         <MaterialIcons name="language" size={24} color="black" />
         <View style={styles.textAndIcon}>

@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  SafeAreaView,
-  Text,
-  View,
-  StyleSheet,
-  Image,
-  Alert,
-} from "react-native";
-import { Ionicons as Icon } from "@expo/vector-icons";
+import { SafeAreaView, View, StyleSheet, Alert } from "react-native";
 import axios from "axios";
 
 import Logo from "../Component/Logo";
@@ -18,7 +10,8 @@ import GilroyText from "../Component/GilroyText";
 import Button from "../Component/Button";
 
 function validateEmail(email) {
-  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const re =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
 }
 
@@ -27,8 +20,8 @@ const url = "https://training.softech.cloud/api/users/login";
 function Login({ navigation }) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  //ngothanhtung.it@outlook.com
-  //ngocthien@gmail.com
+  //Thien@gmail.com
+  //1234
   const onSignIn = () => {
     const data = {
       email: email,
@@ -114,7 +107,7 @@ function Login({ navigation }) {
         </View>
         {/* --------------------------------- */}
         {/* LOGIN */}
-        <View style={{flex: 1, justifyContent: "center"}}>
+        <View style={{ flex: 1, justifyContent: "center" }}>
           <Button
             color="#FF6C44"
             titleColor="white"
@@ -125,7 +118,6 @@ function Login({ navigation }) {
       </View>
       {/* End: Middle */}
       {/* --------------------------------------------------------------------- */}
-
     </SafeAreaView>
   );
 }

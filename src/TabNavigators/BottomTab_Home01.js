@@ -1,11 +1,10 @@
 import React from "react";
 import { Text, View, StyleSheet } from "react-native";
 import { Feather as Feather } from "@expo/vector-icons";
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import Calendar from "../Calendar/Calendar";
-// import Setting from "./screensHome01/Setting";
 import NavigateInfo from "../NavigateInfo";
 import NotificationScreen from "./screensHome01/NotificationScreen";
 
@@ -23,7 +22,6 @@ export default function BottomTab_Home01() {
         tabBarOptions={{
           showLabel: false,
           style: {
-            // flex: 0.1,
             height: 88,
             paddingHorizontal: 24,
             borderRadius: 24,
@@ -63,21 +61,13 @@ export default function BottomTab_Home01() {
               if (focused) {
                 return (
                   <View style={styles.tabButton}>
-                    <AntDesign
-                      name="setting"
-                      size={size * 0.8}
-                      color="white"
-                    />
+                    <AntDesign name="setting" size={size * 0.8} color="white" />
                     <Text style={styles.label}>Seting</Text>
                   </View>
                 );
               } else {
                 return (
-                  <AntDesign
-                    name="setting"
-                    size={size * 0.8}
-                    color={color}
-                  />
+                  <AntDesign name="setting" size={size * 0.8} color={color} />
                 );
               }
             },

@@ -9,7 +9,6 @@ import {
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-
 import ImageUser from "./ComponentProfile/ImageUser";
 import BoxSetting from "./ComponentSetting/BoxSetting";
 
