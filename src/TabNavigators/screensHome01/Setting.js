@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
+  ScrollView,
 } from "react-native";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -33,6 +34,7 @@ export default function Setting({ navigation }) {
   }, []);
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView>
       <View style={styles.headerContainer}>
         <TouchableOpacity style={styles.editContainer}>
           <Text style={{ fontSize: 16, color: "#FF6C44" }}></Text>
@@ -60,6 +62,7 @@ export default function Setting({ navigation }) {
         </TouchableOpacity>
         <BoxSetting navigation={navigation} />
       </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }

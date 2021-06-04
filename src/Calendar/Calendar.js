@@ -43,37 +43,6 @@ const Calendar = () => {
     getData();
   });
 
-  // const loadItems = (day) => {
-  //   setTimeout(() => {
-  //     const newItems = {};
-  //     items.forEach((item) => {
-  //       let name = (new Date(item.schedule)).toLocaleDateString("VN")
-  //       newItems[name] = items[item];
-  //     });
-  //     setBooks(newItems);
-  //   }, 1000);
-  // };
-
-  // const renderItem = (item) => {
-  //   return (
-  //     <TouchableOpacity style={{ marginRight: 10, marginTop: 17 }}>
-  //       <Card>
-  //         <Card.Content>
-  //           <View
-  //             style={{
-  //               flexDirection: "row",
-  //               justifyContent: "space-between",
-  //               alignItems: "center",
-  //             }}
-  //           >
-  //             <Text>{item.name}</Text>
-  //             <Avatar.Text label="C" />
-  //           </View>
-  //         </Card.Content>
-  //       </Card>
-  //     </TouchableOpacity>
-  //   );
-  // };
   let loadItems = (day) => {
     setTimeout(() => {
       let items = {};
@@ -115,8 +84,7 @@ const Calendar = () => {
           testID={testIDs.agenda.ITEM}
           onPress={() =>
             Alert.alert(
-              `Lịch hẹn của KH:
-            ${item.customer.name}`,
+              `Lịch hẹn của KH:\n${item.customer.name}`,
               `Vào lúc ${new Date(item.schedule)
                 .toTimeString("VN")
                 .slice(0, 5)} - ngày ${new Date(
@@ -193,20 +161,6 @@ const Calendar = () => {
         renderItem={renderItem}
         renderEmptyDate={renderEmptyDate}
         rowHasChanged={rowHasChanged}
-        // markingType={'period'}
-        // markedDates={{
-        //    '2017-05-08': {textColor: '#43515c'},
-        //    '2017-05-09': {textColor: '#43515c'},
-        //    '2017-05-14': {startingDay: true, endingDay: true, color: 'blue'},
-        //    '2017-05-21': {startingDay: true, color: 'blue'},
-        //    '2017-05-22': {endingDay: true, color: 'gray'},
-        //    '2017-05-24': {startingDay: true, color: 'gray'},
-        //    '2017-05-25': {color: 'gray'},
-        //    '2017-05-26': {endingDay: true, color: 'gray'}}}
-        // monthFormat={'yyyy'}
-        // theme={{calendarBackground: 'red', agendaKnobColor: 'green'}}
-        //renderDay={(day, item) => (<Text>{day ? day.day: 'item'}</Text>)}
-        // hideExtraDays={false}
       />
     </SafeAreaView>
   );
@@ -224,7 +178,12 @@ const styles = StyleSheet.create({
   emptyDate: {
     height: 15,
     flex: 1,
-    paddingTop: 30,
+    backgroundColor: "#bdc3c7",
+    borderRadius: 8,
+    padding: 10,
+    marginTop: 12,
+    marginRight: 12,
+    justifyContent: "center",
   },
   boxContainer: {
     backgroundColor: "#bdc3c7",
@@ -233,14 +192,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 10,
     marginTop: 12,
-    marginBottom: 12,
+    // marginBottom: 12,
     marginRight: 12,
   },
   boxFunc: {
     backgroundColor: "#FF6C44",
     height: 40,
     width: 90,
-    // marginBottom: 12,
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",

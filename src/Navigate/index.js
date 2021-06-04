@@ -17,11 +17,11 @@ const Stack = createStackNavigator();
 export default function Navigate() {
   return (
     <Stack.Navigator /*headerMode="screen"*/>
-      {/* <Stack.Screen
+      <Stack.Screen
         name="Login"
         component={Login}
         options={{ headerShown: false }}
-      /> */}
+      />
       {/* ---------------------------- */}
       <Stack.Screen
         name="Home01"

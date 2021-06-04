@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, View, StyleSheet, Alert } from "react-native";
+import {
+  SafeAreaView,
+  View,
+  StyleSheet,
+  Alert,
+  ScrollView,
+} from "react-native";
 import axios from "axios";
 
 import Logo from "../Component/Logo";
@@ -86,85 +92,87 @@ function Login({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Begin: Logo */}
-      <View style={styles.logoContainer}>
-        <Logo
-          onPress={() => {
-            navigation.navigate("Login");
-          }}
-        />
-      </View>
-      {/* End: Logo */}
-      {/* --------------------------------------------------------------------- */}
-      {/* Begin: Header */}
-      <View style={styles.headerContainer}>
-        <Header
-          title="Let's Sign You In"
-          decription="Welcome back, you've been missed!"
-        />
-      </View>
-      {/* End: Header */}
-      {/* --------------------------------------------------------------------- */}
-      {/* Begin: Middle */}
-      <View style={styles.middleContainer}>
-        {/* S */}
-        <MiddleInput
-          textLable="Store"
-          input="Enter Name Store"
-          icon="check-circle-outline"
-          onChangeText={(text) => {
-            setStore(text);
-          }}
-        />
-        {/* EMAIL */}
-        <MiddleInput
-          textLable="User Name"
-          input="Enter User Name"
-          icon="check-circle-outline"
-          onChangeText={(text) => {
-            setUsername(text);
-          }}
-        />
-        {/* --------------------------------- */}
-        {/* PASSWORD */}
-        <MiddleInput
-          textLable="Password"
-          input="Enter your password"
-          hidePass={true}
-          secureTextEntry="true"
-          icon="eye-outline"
-          onChangeText={(text) => {
-            setPassword(text);
-          }}
-        />
-        {/* --------------------------------- */}
-        {/* SAVE ME & FORGOT */}
-        <View
-          flexDirection="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <SwitchButton titleSaveMe="Save me" />
-          <GilroyText
-            textSign="Forgot password"
+      <ScrollView>
+        {/* Begin: Logo */}
+        <View style={styles.logoContainer}>
+          <Logo
             onPress={() => {
-              navigation.navigate("PasswordRecovery");
+              navigation.navigate("Login");
             }}
           />
         </View>
-        {/* --------------------------------- */}
-        {/* LOGIN */}
-        <View style={{ flex: 1, justifyContent: "center" }}>
-          <Button
-            color="#FF6C44"
-            titleColor="white"
-            title="Sign In"
-            onPress={onSignIn}
+        {/* End: Logo */}
+        {/* --------------------------------------------------------------------- */}
+        {/* Begin: Header */}
+        <View style={styles.headerContainer}>
+          <Header
+            title="Let's Sign You In"
+            decription="Welcome back, you've been missed!"
           />
         </View>
-      </View>
-      {/* End: Middle */}
-      {/* --------------------------------------------------------------------- */}
+        {/* End: Header */}
+        {/* --------------------------------------------------------------------- */}
+        {/* Begin: Middle */}
+        <View style={styles.middleContainer}>
+          {/* S */}
+          <MiddleInput
+            textLable="Store"
+            input="Enter Name Store"
+            icon="check-circle-outline"
+            onChangeText={(text) => {
+              setStore(text);
+            }}
+          />
+          {/* EMAIL */}
+          <MiddleInput
+            textLable="User Name"
+            input="Enter User Name"
+            icon="check-circle-outline"
+            onChangeText={(text) => {
+              setUsername(text);
+            }}
+          />
+          {/* --------------------------------- */}
+          {/* PASSWORD */}
+          <MiddleInput
+            textLable="Password"
+            input="Enter your password"
+            hidePass={true}
+            secureTextEntry="true"
+            icon="eye-outline"
+            onChangeText={(text) => {
+              setPassword(text);
+            }}
+          />
+          {/* --------------------------------- */}
+          {/* SAVE ME & FORGOT */}
+          <View
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <SwitchButton titleSaveMe="Save me" />
+            <GilroyText
+              textSign="Forgot password"
+              onPress={() => {
+                navigation.navigate("PasswordRecovery");
+              }}
+            />
+          </View>
+          {/* --------------------------------- */}
+          {/* LOGIN */}
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            <Button
+              color="#FF6C44"
+              titleColor="white"
+              title="Sign In"
+              onPress={onSignIn}
+            />
+          </View>
+        </View>
+        {/* End: Middle */}
+        {/* --------------------------------------------------------------------- */}
+      </ScrollView>
     </SafeAreaView>
   );
 }

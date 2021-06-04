@@ -25,7 +25,7 @@ function Profile({ navigation }) {
   useEffect(() => {
     async function getInformation() {
       let result = JSON.parse(await SecureStore.getItemAsync("staff"));
-      console.log(result)
+      console.log(result);
       setData(result);
     }
     getInformation();
@@ -60,7 +60,7 @@ function Profile({ navigation }) {
         <ImageUser avatar={data.avatar} />
       </View>
       <View style={styles.infoContainer}>
-      <InfoUserEdit
+        <InfoUserEdit
           name={data.name}
           email={data.email}
           address={data.address}
@@ -92,29 +92,10 @@ const styles = StyleSheet.create({
     marginRight: 24,
   },
   imageContainer: {
-    flex: 1,
+    flex: 0.4,
   },
   infoContainer: {
     flex: 1,
-  },
-
-  saveContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  saveButton: {
-    height: 50,
-    width: 200,
-    borderRadius: 12,
-    backgroundColor: "#FF6C44",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  textSave: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "white",
   },
 });
 
