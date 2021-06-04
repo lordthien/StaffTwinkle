@@ -52,6 +52,17 @@ export default function BoxSetting({ navigation }) {
           />
         </View>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.boxContainer} onPress={()=> {navigation.navigate("Login")}}>
+        <Feather name="log-out" size={24} color="black" />
+        <View style={styles.textAndIcon}>
+          <Text style={styles.textContainer}>Sign out</Text>
+          <AntDesign
+            name="right"
+            size={18}
+            color="black"
+          />
+        </View>
+      </TouchableOpacity>
     </View>
   );
 }

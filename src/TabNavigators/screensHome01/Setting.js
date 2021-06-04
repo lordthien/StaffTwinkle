@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,8 +11,26 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import ImageUser from "./ComponentProfile/ImageUser";
 import BoxSetting from "./ComponentSetting/BoxSetting";
+import * as SecureStore from "expo-secure-store";
 
-export default function CartScreen({ navigation }) {
+const url = "http://149.28.137.174:5000/app/staff";
+
+export default function Setting({ navigation }) {
+  const [data, setData] = useState({
+    name: "",
+    email: "",
+    address: "",
+    avatar: "",
+  });
+  useEffect(() => {
+    async function getInformation() {
+      let result = JSON.parse(await SecureStore.getItemAsync("staff"));
+      console.log(result)
+      setData(result);
+    }
+    getInformation();
+    return;
+  }, []);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.headerContainer}>
@@ -21,7 +39,7 @@ export default function CartScreen({ navigation }) {
         </TouchableOpacity>
       </View>
       <View style={styles.imageContainer}>
-        <ImageUser />
+        <ImageUser avatar={data.avatar} />
       </View>
       <View style={{ flex: 1 }}>
         <TouchableOpacity
@@ -40,7 +58,7 @@ export default function CartScreen({ navigation }) {
             <AntDesign name="right" size={18} color="black" />
           </View>
         </TouchableOpacity>
-        <BoxSetting />
+        <BoxSetting navigation={navigation} />
       </View>
     </SafeAreaView>
   );

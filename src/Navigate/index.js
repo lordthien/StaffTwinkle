@@ -10,17 +10,18 @@ import ResetPasswordComplete from "../SignInTwinkle/PasswordRecovery/ResetPasswo
 
 import BottomTab_Home01 from "../TabNavigators/BottomTab_Home01";
 import Profile from "../TabNavigators/screensHome01/ComponentProfile/Profile";
+import ProfileEdit from "../TabNavigators/screensHome01/ComponentProfile/ProfileEdit";
 
 const Stack = createStackNavigator();
 
 export default function Navigate() {
   return (
     <Stack.Navigator /*headerMode="screen"*/>
-      <Stack.Screen
+      {/* <Stack.Screen
         name="Login"
         component={Login}
         options={{ headerShown: false }}
-      />
+      /> */}
       {/* ---------------------------- */}
       <Stack.Screen
         name="Home01"
@@ -33,6 +34,13 @@ export default function Navigate() {
       <Stack.Screen
         name="Profile"
         component={Profile}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ProfileEdit"
+        component={ProfileEdit}
         options={{
           headerShown: false,
         }}

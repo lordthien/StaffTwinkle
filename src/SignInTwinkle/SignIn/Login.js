@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView, View, StyleSheet, Alert } from "react-native";
 import axios from "axios";
 
@@ -9,42 +9,80 @@ import SwitchButton from "../Component/SwitchButton";
 import GilroyText from "../Component/GilroyText";
 import Button from "../Component/Button";
 
-function validateEmail(email) {
-  const re =
-    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(String(email).toLowerCase());
-}
+import * as SecureStore from "expo-secure-store";
 
-const url = "https://training.softech.cloud/api/users/login";
+const url = "http://149.28.137.174:5000/app/staff";
 
 function Login({ navigation }) {
-  const [email, setEmail] = React.useState("");
+  const [store, setStore] = React.useState("");
+  const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
-  //Thien@gmail.com
-  //1234
-  const onSignIn = () => {
+
+  const onSignIn = async () => {
     const data = {
-      email: email,
+      store: store.toLowerCase(),
+      username: username.toLowerCase(),
       password: password,
     };
-    axios
-      .post(url, data)
-      .then((response) => {
-        console.log(JSON.stringify(response.data));
-        console.log("--------------------------------");
-        if (response.data.ok === false) {
-          Alert.alert(
-            "Thông báo",
-            "Email của bạn chưa đăng ký. Vui lòng kiểm tra lại!"
-          );
-        } else {
-          navigation.navigate("Home01");
-        }
-      })
+    //cattocathien - andoq - 123123
+    let response = await fetch(`${url}/login`, {
+      method: "POST", // or 'PUT'
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
       .catch((error) => {
         console.log(error);
       });
+    if (response.status !== "Success") {
+      Alert.alert("Thông báo", response.error);
+    } else {
+      try {
+        await SecureStore.setItemAsync("token", response.token);
+        await SecureStore.setItemAsync(
+          "staff",
+          JSON.stringify({
+            id: response.staff._id,
+            avatar: response.staff.avatar,
+            name: response.staff.name,
+            email: response.staff.email,
+            address: response.staff.address,
+          })
+        );
+      } catch (error) {
+        Alert.alert(error);
+      } finally {
+        navigation.navigate("Home01");
+      }
+    }
   };
+
+  useEffect(() => {
+    const SignOut = async () => {
+      let token = await SecureStore.getItemAsync("token");
+      if (token) {
+        let logout = await fetch(`${url}/logout`, {
+          method: "POST", // or 'PUT'
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((response) => response.json())
+          .catch((error) => {
+            console.log(error);
+          });
+        console.log(logout);
+        if (logout.status == "Success")
+          Alert.alert("Thông báo", "Đăng xuất thành công");
+        await SecureStore.deleteItemAsync("token");
+        await SecureStore.deleteItemAsync("staff");
+      }
+    };
+    SignOut();
+  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -69,13 +107,22 @@ function Login({ navigation }) {
       {/* --------------------------------------------------------------------- */}
       {/* Begin: Middle */}
       <View style={styles.middleContainer}>
-        {/* EMAIL */}
+        {/* S */}
         <MiddleInput
-          textLable="Email"
-          input="Enter Email"
+          textLable="Store"
+          input="Enter Name Store"
           icon="check-circle-outline"
           onChangeText={(text) => {
-            setEmail(text);
+            setStore(text);
+          }}
+        />
+        {/* EMAIL */}
+        <MiddleInput
+          textLable="User Name"
+          input="Enter User Name"
+          icon="check-circle-outline"
+          onChangeText={(text) => {
+            setUsername(text);
           }}
         />
         {/* --------------------------------- */}

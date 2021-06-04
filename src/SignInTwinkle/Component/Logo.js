@@ -7,7 +7,7 @@ function Logo({onPress}) {
       <TouchableOpacity onPress={onPress}>
         <Image
           style={styles.logoContainer}
-          source={require("../../../assets/twinkle.jpg")}
+          source={require("../../../assets/Twinkle_Logo.png")}
         />
       </TouchableOpacity>
     </View>

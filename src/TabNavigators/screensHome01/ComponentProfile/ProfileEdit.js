@@ -15,8 +15,9 @@ import InfoUserEdit from "./InfoUserEdit";
 
 const url = "http://149.28.137.174:5000/app/staff";
 
-function Profile({ navigation }) {
+function ProfileEdit({ navigation }) {
   const [data, setData] = useState({
+    id: "",
     name: "",
     email: "",
     address: "",
@@ -24,13 +25,36 @@ function Profile({ navigation }) {
   });
   useEffect(() => {
     async function getInformation() {
-      let result = JSON.parse(await SecureStore.getItemAsync("staff"));
-      console.log(result)
-      setData(result);
+      let data = JSON.parse(await SecureStore.getItemAsync("staff"));
+      setData(data);
     }
     getInformation();
     return;
   }, []);
+  let onPressSave = () => {
+    let link = `http://149.28.137.174:5000/app/cancel?id=${id}`;
+    // axios
+    //   .post(link, {
+    //     headers: {
+    //       "Authorization": `Bearer ${token}`,
+    //     },
+    //   })
+    fetch(link, {
+      method: "POST", // or 'PUT'
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        navigation.navigate("Profile");
+        if (res.status == "Success")
+          Alert.alert("Thông báo", "Đã thay đổi thông tin.");
+      })
+      .catch((err) => {
+        throw err;
+      });
+  }
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.headerContainer}>
@@ -40,31 +64,29 @@ function Profile({ navigation }) {
             size={24}
             color="black"
             onPress={() => {
-              navigation.navigate("Setting");
+              navigation.navigate("Profile");
             }}
           />
         </TouchableOpacity>
         <Text style={{ marginLeft: 12, fontSize: 16 }}>Profile</Text>
-        <TouchableOpacity style={styles.editContainer}>
-          <Text
-            style={{ fontSize: 16, color: "#FF6C44" }}
-            onPress={() => {
-              navigation.navigate("ProfileEdit");
-            }}
-          >
-            Edit
-          </Text>
-        </TouchableOpacity>
       </View>
       <View style={styles.imageContainer}>
         <ImageUser avatar={data.avatar} />
       </View>
       <View style={styles.infoContainer}>
-      <InfoUserEdit
+        <InfoUserEdit
           name={data.name}
           email={data.email}
           address={data.address}
         />
+      </View>
+      <View style={styles.saveContainer}>
+        <TouchableOpacity
+          style={styles.saveButton}
+          onPress={onPressSave}
+        >
+          <Text style={styles.textSave}>Save</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -86,20 +108,21 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginLeft: 12,
   },
-  editContainer: {
-    flex: 1,
-    alignItems: "flex-end",
-    marginRight: 24,
-  },
   imageContainer: {
-    flex: 1,
+    flex: 0.4,
   },
   infoContainer: {
-    flex: 1,
+    flex: 0.5,
+  },
+
+  textSave: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "white",
   },
 
   saveContainer: {
-    flex: 1,
+    flex: 0.5,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -111,11 +134,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  textSave: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "white",
-  },
 });
 
-export default Profile;
+export default ProfileEdit;

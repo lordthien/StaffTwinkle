@@ -1,25 +1,28 @@
-import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Text, View, TextInput } from "react-native";
+import * as SecureStore from "expo-secure-store";
 
-export default function InfoUser({ navigation }) {
+export default function InfoUserEdit({ name, email, address }) {
+  const [newName, setNewName] = useState(name);
+  const [newEmail, setNewEmail] = useState(email);
+  const [newAddress, setNewAddress] = useState(address);
+  let onSavePress = async () => {};
   return (
     <View style={styles.textContainer}>
       <View style={styles.boxContainer}>
         <Text style={styles.nameContainer}>Name</Text>
-        <Text style={styles.textName}>David Copperfill</Text>
+        {/* <Text style={styles.textName}>{name}</Text> */}
+        <TextInput style={styles.textName} placeholder={"Name"}>{name}</TextInput>
       </View>
       <View style={styles.boxContainer}>
         <Text style={styles.nameContainer}>Email</Text>
-        <Text style={styles.textName}>ngongocthien@dtu.edu.vn</Text>
+        {/* <Text style={styles.textName}>{email}</Text> */}
+        <TextInput style={styles.textName} placeholder={"Email"}>{email}</TextInput>
       </View>
       <View style={styles.boxContainer}>
-        <Text style={styles.nameContainer}>Phone Number</Text>
-        <Text style={styles.textName}>0705112199</Text>
+        <Text style={styles.nameContainer}>Address</Text>
+        <TextInput style={styles.textName} placeholder={""}>{address}</TextInput>
       </View>
-      <TouchableOpacity style={styles.boxContainer}>
-        <Text style={styles.nameContainer}>Password</Text>
-        <Text style={styles.textName}>*********</Text>
-      </TouchableOpacity>
 
     </View>
   );
