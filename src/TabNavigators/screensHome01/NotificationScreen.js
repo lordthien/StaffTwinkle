@@ -16,6 +16,7 @@ export default function NotificationScreen({ navigation }) {
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
+  const [token, setToken] = useState("");
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) =>
@@ -40,6 +41,45 @@ export default function NotificationScreen({ navigation }) {
     };
   }, []);
 
+  useEffect(() => {
+    async function getToken() {
+      let result = await SecureStore.getItemAsync("token");
+      setToken(result);
+    }
+    if (notification) {
+      const url = "http://149.28.137.174:5000/app/staff/nearestBook";
+      getToken();
+      fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((res) => res.json())
+        .then(async (result) => {
+          let noti = await SecureStore.getItemAsync("noti");
+          await SecureStore.setItemAsync("noti", "");
+          // if(!String(noti).includes(String(result.book._id)))
+          console.log(
+            `Lịch hẹn với KH ${result.book.customer.name}`,
+            `Còn 30 phút là tới lịch hẹn ${result.book.services[0].name}`,
+            60 * 30 * 1000 + 1500
+          );
+          await schedulePushNotification(
+            `Lịch hẹn với KH ${result.book.customer.name}`,
+            `Còn 30 phút là tới lịch hẹn ${result.book.services[0].name}`,
+            60 * 30 * 1000 + 1500
+            // (result.schedule.getTime() - (new Date()).getTime())
+            // result.book.schedule.getTime() - new Date().getTime()
+          );
+          if (noti == "" || noti == null)
+            await SecureStore.setItemAsync("noti", result.book._id);
+          else await SecureStore.setItemAsync("noti", noti + result.book._id);
+        });
+    }
+  }, [notification]);
+
   return (
     <View
       style={{
@@ -62,21 +102,22 @@ export default function NotificationScreen({ navigation }) {
       <Button
         title="Press to schedule a notification"
         onPress={async () => {
-          await schedulePushNotification();
+          await schedulePushNotification("", "", 60 * 30 * 1000 + 2000);
         }}
       />
     </View>
   );
 }
 
-async function schedulePushNotification() {
+async function schedulePushNotification(title, body, time) {
+  let second = Math.floor((time - 60 * 30 * 1000) / 1000);
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: "You've got mail! 📬",
-      body: "Here is the notification body",
+      title: title,
+      body: body,
       data: { data: "goes here" },
     },
-    trigger: { seconds: 2 },
+    trigger: { seconds: second },
   });
 }
 

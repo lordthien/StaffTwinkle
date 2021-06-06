@@ -4,6 +4,7 @@ import { Feather as Feather } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
+// import Calendar2 from "../Calendar/Calendar2";
 import Calendar from "../Calendar/Calendar";
 import NavigateInfo from "../NavigateInfo";
 import NotificationScreen from "./screensHome01/NotificationScreen";
@@ -73,7 +74,7 @@ export default function BottomTab_Home01() {
             },
           }}
         />
-        <Tab.Screen
+        {/* <Tab.Screen
           name="NotificationScreen"
           component={NotificationScreen}
           options={{
@@ -90,7 +91,7 @@ export default function BottomTab_Home01() {
               }
             },
           }}
-        />
+        /> */}
       </Tab.Navigator>
     </View>
   );
@@ -107,8 +108,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    height: 40,
-    minWidth: 90,
+    height: 50,
+    minWidth: 150,
     paddingHorizontal: 16,
     borderRadius: 20,
     backgroundColor: "#FF6C44",
