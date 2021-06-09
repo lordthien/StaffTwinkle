@@ -5,7 +5,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 // import Calendar2 from "../Calendar/Calendar2";
-import Calendar from "../Calendar/Calendar";
+import Calendar from "../Calendar/Calendar2";
 import NavigateInfo from "../NavigateInfo";
 import NotificationScreen from "./screensHome01/NotificationScreen";
 

@@ -64,6 +64,7 @@ const Calendar = () => {
     };
   }, []);
 
+  
   useEffect(() => {
     async function getToken() {
       let result = await SecureStore.getItemAsync("token");
@@ -71,10 +72,8 @@ const Calendar = () => {
     }
     getToken();
   });
-
   useEffect(() => {
     const url = "http://149.28.137.174:5000/app/staff/nearestBook";
-    // console.log(url);
     fetch(url, {
       method: "GET",
       headers: {
@@ -88,7 +87,6 @@ const Calendar = () => {
         console.log(result);
         let time =
           new Date(result.book.schedule).getTime() - new Date().getTime();
-        if(noti!==null)
         if (!noti.includes(result.book._id)) {
           await schedulePushNotification(
             `Lịch hẹn với KH ${result.book.customer.name}`,
@@ -127,6 +125,19 @@ const Calendar = () => {
     setBooks(result.books);
   };
 
+  useEffect(() => {
+    getData();
+    loadItems({
+      timestamp: new Date(
+        `${today.getFullYear()}-${
+          today.getMonth() > 8
+            ? Number(today.getMonth() + 1)
+            : "0" + Number(today.getMonth() + 1)
+        }-${today.getDate() < 10 ? "0" + today.getDate() : today.getDate()}`
+      ).getTime(),
+    });
+  });
+
   let loadItems = (day) => {
     setTimeout(() => {
       let items = {};
@@ -160,6 +171,32 @@ const Calendar = () => {
     }, 1000);
   };
 
+  // let setPaid = async (item) => {
+  //   let token = await SecureStore.getItemAsync("token");
+  //   fetch(`${url}/setPaid?id=${item._id}`, {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   })
+  //     .then((response) => response.json())
+  //     .then((res) => {
+  //       if (res.status == "Success")
+  //         Alert.alert(
+  //           `Thông báo: \n${item.customer.name}`,
+  //           `Vào lúc ${new Date()
+  //             .toTimeString("VN")
+  //             .slice(0, 5)} - ngày ${new Date(item.schedule).toLocaleDateString(
+  //             "VN"
+  //           )} đã thanh toán đơn hàng.`
+  //         );
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
+
   let setPaid = async (item) => {
     let token = await SecureStore.getItemAsync("token");
     fetch(`${url}/setPaid?id=${item._id}`, {
@@ -170,8 +207,32 @@ const Calendar = () => {
       },
     })
       .then((response) => response.json())
-      .then((res) => {
-        if (res.status == "Success")
+      .then(async (res) => {
+        if (res.status == "Success") {
+          let token = await SecureStore.getItemAsync("token");
+          let result = await fetch(`${url}/unpaidBooks`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          })
+            .then((response) => response.json())
+            .catch((error) => {
+              console.log(error);
+            });
+          setBooks({ books: result.books });
+          loadItems({
+            timestamp: new Date(
+              `${today.getFullYear()}-${
+                today.getMonth() > 8
+                  ? Number(today.getMonth() + 1)
+                  : "0" + Number(today.getMonth() + 1)
+              }-${
+                today.getDate() < 10 ? "0" + today.getDate() : today.getDate()
+              }`
+            ).getTime(),
+          });
           Alert.alert(
             `Thông báo: \n${item.customer.name}`,
             `Vào lúc ${new Date()
@@ -180,18 +241,19 @@ const Calendar = () => {
               "VN"
             )} đã thanh toán đơn hàng.`
           );
+        }
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  const renderItem = (item) => {
+  let renderItem = (item) => {
     return (
       <View style={styles.boxContainer}>
         <TouchableOpacity
           style={{ width: 170 }}
-          // style={{ width: 170, backgroundColor: "green" }}
+          // testID={testIDs.agenda.ITEM}
           onPress={() =>
             Alert.alert(
               `Lịch hẹn của KH:\n${item.customer.name}`,
@@ -226,13 +288,16 @@ const Calendar = () => {
             marginBottom: 10,
           }}
         >
-          <View style={{ alignItems: "center" }}>
+          <View style={{}}>
             <Text style={styles.text}>Trạng thái</Text>
             <Text style={styles.text}>{item.status}</Text>
           </View>
           <TouchableOpacity
             disabled={item.status == "PAID" ? true : false}
-            onPress={() => setPaid(item)}
+            onPress={() => {
+              item.status = "PAID"
+              setPaid(item)
+            }}
             style={item.status == "PAID" ? styles.boxFuncPaid : styles.boxFunc}
           >
             <Text style={styles.textBoxBold}>Thanh toán</Text>
@@ -259,10 +324,9 @@ const Calendar = () => {
     return date.toISOString().split("T")[0];
   };
   return (
-    // <SafeAreaView style={{ height: 1125 }}>
     <SafeAreaView style={{ flex: 1 }}>
       <Agenda
-        // style={{ height: 728 }}
+        // testID={testIDs.agenda.CONTAINER}
         items={items}
         loadItemsForMonth={loadItems}
         minDate={`${today.getFullYear()}-${
@@ -284,7 +348,7 @@ const Calendar = () => {
 };
 
 async function schedulePushNotification(title, body, time) {
-  let second = Math.floor(2000 / 1000);
+  let second = Math.floor((time - 60 * 30 * 1000) / 1000);
   await Notifications.scheduleNotificationAsync({
     content: {
       title: title,

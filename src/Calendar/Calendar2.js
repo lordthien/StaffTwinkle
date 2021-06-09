@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect, useRef } from "react";
+
 import {
   View,
   TouchableOpacity,
@@ -6,9 +7,21 @@ import {
   SafeAreaView,
   StyleSheet,
   Alert,
+  Platform,
 } from "react-native";
 import { Agenda } from "react-native-calendars";
 import * as SecureStore from "expo-secure-store";
+
+import Constants from "expo-constants";
+import * as Notifications from "expo-notifications";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 // const testIDs = require("./testID");
 const url = "http://149.28.137.174:5000/app/staff";
@@ -18,9 +31,41 @@ let today = new Date();
 export default class Calendar2 extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      items: {},
-      books: [],
+  }
+  state = {
+    items: {},
+    books: [],
+    token: "",
+    expoPushToken: "",
+    notification: false
+  };
+
+  notificationListener=React.createRef()
+  responseListener=React.createRef()
+
+  componentWillUnmount = async () => {
+    let result = await SecureStore.getItemAsync("token");
+    this.setState({token: result});
+
+    this.registerForPushNotificationsAsync().then((token) =>
+      this.setState({expoPushToken: token})
+    );
+
+    this.notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        this.setState({notification: notification});
+      });
+
+    this.responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        this.notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(this.responseListener.current);
     };
   }
 
@@ -38,7 +83,39 @@ export default class Calendar2 extends Component {
         console.log(error);
       });
     this.setState({ books: result.books });
-    // loadItems();
+    const lasturl = "http://149.28.137.174:5000/app/staff/nearestBook";
+    // console.log(url);
+    fetch(lasturl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then(async (result) => {
+        let noti = await SecureStore.getItemAsync("noti");
+        let time =
+          new Date(result.book.schedule).getTime() - new Date().getTime();
+        // if(noti==null) noti = ""
+        // if (!noti.includes(result.book._id)) {
+          this.schedulePushNotification(
+            `Lịch hẹn với KH ${result.book.customer.name}`,
+            `Còn 30 phút là tới lịch hẹn ${
+              result.book.services[0].name
+            }. Vào lúc ${new Date(result.book.schedule)
+              .toTimeString("VN")
+              .slice(0, 5)} - ngày ${new Date(
+              result.book.schedule
+            ).toLocaleDateString("VN")}`,
+            time
+          );
+          if (noti == "" || noti == null)
+            await SecureStore.setItemAsync("noti", result.book._id);
+          else if (!noti.includes(result.book._id))
+            await SecureStore.setItemAsync("noti", noti + result.book._id);
+        // }
+      });
   };
 
   loadItems = (day) => {
@@ -123,31 +200,50 @@ export default class Calendar2 extends Component {
       });
   };
 
-  // setPaid = async (item) => {
-  //   let token = await SecureStore.getItemAsync("token");
-  //   fetch(`${url}/setPaid?id=${item._id}`, {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   })
-  //     .then((response) => response.json())
-  //     .then((res) => {
-  //       if (res.status == "Success")
-  //         Alert.alert(
-  //           `Thông báo: \n${item.customer.name}`,
-  //           `Vào lúc ${new Date()
-  //             .toTimeString("VN")
-  //             .slice(0, 5)} - ngày ${new Date(item.schedule).toLocaleDateString(
-  //             "VN"
-  //           )} đã thanh toán đơn hàng.`
-  //         );
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // };
+    
+  schedulePushNotification = async (title, body, time) => {
+    let second = Math.floor(( time - 60 * 30 * 1000 ) / 1000);
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: title,
+        body: body,
+        data: { data: "goes here" },
+      },
+      trigger: { seconds: second },
+    });
+  }
+
+  registerForPushNotificationsAsync = async function() {
+    let token;
+    if (Constants.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(token);
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+
+    if (Platform.OS === "android") {
+      Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
+      });
+    }
+
+    return token;
+  }
 
   renderItem = (item) => {
     return (
@@ -312,3 +408,4 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
 });
+
